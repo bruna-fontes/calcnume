@@ -18,19 +18,119 @@ Será definido valores iniciais de R, L e C, porém serão alterados para poder 
 
 O circuito utilizado será o seguinte:
 
-![RLC](C:/Users/bkfro/Documents/calculo numerico/calcnume/imagens/RLC.png)
+
 ![RLC](https://raw.githubusercontent.com/bruna-fontes/calcnume/main/RLC.png?token=GHSAT0AAAAAABTXKG7TX4HNE5FLA4XJLQL4YTCJXMQ)
 
-```{r cars}
-summary(cars)
+Função de transferência
+
+
+```{r}
+
+
+
+FT<- function(s){
+  denom<- R1C1*R2C2*(s^2) + (R1C1 + R2C2+ R1C2)*s +1
+  ft = 1/denom
+  return(denom)
+}
+```
+(R1C1 + R2C2+ R1C2)^2 vai ser maior que R1C1*R2C2, então temos respostas reais. Precisamos encontrar os zeros do denominador da FT
+
+```{r}
+R1C1<- 0.4
+R2C2 <-0.2
+R1C2 <- 0.5
+
+
+beta<-R1C1 + R2C2+ R1C2
+delta<-(R1C1 + R2C2+ R1C2)^2 - 4*(R1C1*R2C2)
+
+s1<- (-(R1C1 + R2C2+ R1C2)+sqrt(delta))/(2*(R1C1*R2C2))
+s2<- (-(R1C1 + R2C2+ R1C2)-sqrt(delta))/(2*(R1C1*R2C2))
+
+FT_denom<- function(s){
+  denom<-R1C1*R2C2*(s^2) + (R1C1 + R2C2+ R1C2)*s +1
+  return(denom)
+}
+FT_denom(0)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+Mas primeiro, devemos fazer o isolamento
+```{r}
+s<- seq(from=-15,to=0,by=0.5)
+plot(FT_denom(s))
+FT_denom(s)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+ggplot()+ geom_line(aes(x= s, y = FT_denom(s)))
+
+tabela<-cbind(s,FT_denom(s),sign(FT_denom(s)))
+
+print(tabela)
+
+muda_sinal_anterior<-c(FALSE)
+for (i in 2:nrow(tabela)) {
+muda_sinal_anterior[i]  <-!(sign(tabela[i-1,2]) == sign(tabela[i,2]))
+}
+tabela2<- cbind(tabela, "mudou o sinal?" = muda_sinal_anterior)
+print(tabela2)
+
+intervalos<-list(0)
+for (i in 2:nrow(tabela2)) {
+  if (tabela2[i,4]==1){
+  intervalos[[i-1]] <- cbind(tabela2[i-1,1],tabela2[i,1])
+  
+  }
+  else{
+    intervalos[[i-1]] <- NA
+  
+  }
+}
+
+intervalos<-intervalos[!is.na(intervalos)]
+print(intervalos)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Usando a técnica de Bissecção
+
+```{r}
+m1<-function(a,b){
+  x0<- (a+b)/2
+  return(x0)
+}
+erro<- c(0.01)
+raizes<-c(0)
+for (j in 1:length(intervalos)) {
+  a<- intervalos[[j]][[1]]
+b<- intervalos[[j]][[2]]
+x_barra<-m1(a,b)
+f_x_barra <- FT_denom(x_barra) #iniciar
+
+while (abs(f_x_barra)> erro) {
+ if (sign(f_x_barra) == -1){
+  b<-x_barra
+      x_barra<-m1(a,b)
+      f_x_barra <- FT_denom(x_barra)
+     print(cbind(x_barra,f_x_barra))
+ } else if (sign(f_x_barra) == 1){
+  a<-x_barra
+  x_barra<-m1(a,b)
+      f_x_barra <- FT_denom(x_barra)
+      print(cbind(x_barra,f_x_barra))
+     
+ }
+raizes[j]<-x_barra
+}
+print(j)
+}
+
+
+print(paste0("resultado final é:",x_barra))
+
+```
+entra em loop para essers valores de R's e C's para encontrar a raiz -0.97
+```
+
+
+
