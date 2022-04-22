@@ -19,6 +19,7 @@ Será definido valores iniciais de R, L e C, porém serão alterados para poder 
 O circuito utilizado será o seguinte:
 
 ![RLC](C:/Users/bkfro/Documents/calculo numerico/calcnume/imagens/RLC.png)
+![RLC](https://github.com/bruna-fontes/calcnume/blob/main/RLC.png)
 
 ```{r cars}
 summary(cars)
