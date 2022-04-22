@@ -1,0 +1,218 @@
+---
+title: "Cálculo Numérico - achar zeros de uma função"
+output:
+  html_document:
+    df_print: paged
+---
+
+ 
+
+```{r}
+library(tidyverse)
+```
+
+# Primeiro passo - Isolamento
+
+![isolamento](C:/Users/bkfro/Documents/advancedprogramming/imagens/isolamento.png)
+
+* existe uma raiz onde os intervalos mudam de sinal
+
+exemplo de isolamento de intervalo
+```{r}
+fx <- function(x) {
+  y <- x^3 - 9*x +5
+  return(y)
+}
+x=seq(from=0,to=3,by=0.5)
+tabela<-cbind(x,fx(x),sign(fx(x)))
+
+print(tabela)
+muda_sinal_anterior<-c(FALSE)
+for (i in 2:nrow(tabela)) {
+muda_sinal_anterior[i]  <-!(sign(tabela[i-1,2]) == sign(tabela[i,2]))
+}
+tabela2<- cbind(tabela, "mudou o sinal?" = muda_sinal_anterior)
+print(tabela2)
+
+intervalos<-list(0)
+for (i in 2:nrow(tabela2)) {
+  if (tabela2[i,4]==1){
+  intervalos[[i-1]] <- cbind(tabela2[i-1,1],tabela2[i,1])
+  
+  }
+  else{
+    intervalos[[i-1]] <- NA
+  
+  }
+}
+
+intervalos<-intervalos[!is.na(intervalos)]
+print(intervalos)
+```
+
+# Método de Bissecção
+![metodo1](C:/Users/bkfro/Documents/advancedprogramming/imagens/bisseccao.png)
+
+```{r}
+m1<-function(a,b){
+  x0<- (a+b)/2
+  return(x0)
+}
+```
+
+## Teorema de Bolzano e seu corolário
+
+* A função corta o eixo somente uma vez.
+
+* Dado um intervalo [a,b], vamos calcular a raiz entre a e b
+usando m1
+
+* pega o ponto médio pra encontrar a raiz inicial x0
+
+* saber qual o critério de parada
+
+* se o x0 não está próximo o suficiente, atualiza a raiz e continua dividindo
+* dividir o intervalo ao meio e verificar se f(a) e f(b) são opostos pra atualizar a raiz
+
+
+# Exemplo de Bisseção
+
+Começamos com o primeiro intervalo definido em intervalos
+
+```{r}
+a<- intervalos[[1]][[1]]
+b<- intervalos[[1]][[2]]
+
+```
+
+Usaremos a função fx como teste, m1 como a raiz aproximada e um erro de 0,01
+
+```{r}
+erro<- c(0.01)
+fx
+m1
+```
+
+Faremoz uma tabela:
+```{r}
+x_barra<- m1(a,b)
+tabela3<- tibble(a=a,b= b, "raiz aproximada"=m1(a,b),"função f(x_barra)" = fx(x_barra))
+print(tabela3)
+```
+
+Então se faz os seguintes questionamentos:
+
+* f(x_barra) é suficientemente próximo da raiz real?
+* é menor que a precião em módulo? se sim, para
+
+Se não:
+
+* verificar sinal de f(x_barra), se for negativo, x_barra substitui b, se for positivo, substitui a.
+
+![metodo11](C:/Users/bkfro/Documents/advancedprogramming/imagens/bisseccao2.png)
+
+```{r} 
+if (abs(fx(x_barra)) >  erro |sign((fx(x_barra))) == -1){
+  b<-x_barra
+}else if (abs(fx(x_barra)) >  erro |sign((fx(x_barra))) == 1){
+  a<-x_barra
+}
+```
+
+Agora precisa calcular novamente x_barra e f(x_barra)
+
+```{r}
+x_barra<-m1(a,b)
+f_x_barra <- fx(x_barra)
+```
+
+e repete o chunk anterior
+
+```{r} 
+if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == -1){
+  b<-x_barra
+} else if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == 1){
+  a<-x_barra
+}
+```
+
+e repete
+
+
+```{r}
+x_barra<-m1(a,b)
+f_x_barra <- fx(x_barra)
+```
+e repete
+```{r} 
+if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == -1){
+  b<-x_barra
+} else if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == 1){
+  a<-x_barra
+}
+```
+
+e repete
+
+
+```{r}
+x_barra<-m1(a,b)
+f_x_barra <- fx(x_barra)
+```
+
+e repete
+```{r} 
+if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == -1){
+  b<-x_barra
+} else if (abs(fx(x_barra)) >  erro & sign((fx(x_barra))) == 1){
+  a<-x_barra
+}
+```
+
+e repete
+
+
+```{r}
+x_barra<-m1(a,b)
+f_x_barra <- fx(x_barra)
+```
+
+
+FINALMENTE, encontramos um f(x_barra) menor que o erro, então temos uma das raízes
+
+```{r}
+f_x_barra> erro
+print(x_barra)
+```
+
+Agora falta o outro intervalo (PUTA QUE PARIU)
+
+# Resumo do Método da Bissecção
+
+![metodo12](C:/Users/bkfro/Documents/advancedprogramming/imagens/resumo_bisseccao.png)
+
+```{r}
+a<- 0.5
+b<- 1
+x_barra<-m1(a,b)
+f_x_barra <- fx(x_barra)
+
+while (abs(f_x_barra)> erro) {
+ if (sign(f_x_barra) == -1){
+  b<-x_barra
+      x_barra<-m1(a,b)
+      f_x_barra <- fx(x_barra)
+      print(cbind(x_barra,f_x_barra))
+ } else if (sign(f_x_barra) == 1){
+  a<-x_barra
+  x_barra<-m1(a,b)
+      f_x_barra <- fx(x_barra)
+      print(cbind(x_barra,f_x_barra))
+     
+ }
+
+      }
+print(paste0("resultado final é:",x_barra))
+
+```
+

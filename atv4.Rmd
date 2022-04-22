@@ -1,0 +1,35 @@
+---
+title: "Trabalho Cálculo Numérico"
+author: "Bruna"
+date: "22/04/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Atividade 4 - Utilizar os modelos iterativos para encontrar os zeros em algum problema da área
+
+O problema escolhido é fazer a modelagem de um circuito elétrico RLC (Resistor Indutor e Capacitor) através da função de transferência (FT), encontrar os polos da FT e então calcular a estabilidade. 
+
+Será definido valores iniciais de R, L e C, porém serão alterados para poder analisarmos a influência na estabilidade do circuito.
+
+O circuito utilizado será o seguinte:
+
+![RLC](C:/Users/bkfro/Documents/calculo numerico/atv 4/imagens/RLC.png)
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
