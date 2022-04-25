@@ -205,7 +205,7 @@ a<- intervalos[[2]][[1]]
 b<- intervalos[[2]][[2]]
 x_barra<-m1(a,b)
 f_x_barra <- fx(x_barra)
-
+a
 while (abs(f_x_barra)> erro) {
  if (sign(f_x_barra) == -1){
   b<-x_barra
