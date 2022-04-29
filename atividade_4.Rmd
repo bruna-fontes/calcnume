@@ -2,7 +2,9 @@
 title: "Atv_4"
 author: "Bruna e Nathalha"
 date: "22/04/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -353,9 +355,6 @@ tbl3_1<-matrix(nrow=1,ncol=3)
         raizes3_1[j]<-t
   }
   
-
-print(raizes3)
-ggplot()+geom_line(aes(x = x, y = phi1(x))) + geom_line(aes(x = x, y =x))
 
 
 ```
