@@ -60,7 +60,7 @@ FT_denom(0)
 Mas primeiro, devemos fazer o isolamento
 ```{r}
 s<- seq(from=-15,to=0,by=0.5)
-plot(FT_denom(s))
+
 FT_denom(s)
 
 ggplot()+ geom_line(aes(x= s, y = FT_denom(s)))
@@ -111,42 +111,64 @@ m1<-function(a,b){
 erro<- c(0.01)
 raizes<-c(0)
 j<-1
-k<-0
-for (j in 1:length(intervalos)) {
+k<-1
+#para primeiro intervalo
   a<- intervalos[[j]][[1]]
 b<- intervalos[[j]][[2]]
+tbl1<-matrix(nrow = 1,ncol = 3)
 x_barra<-m1(a,b)
 f_x_barra <- FT_denom(x_barra) #iniciar
-
+tbl1<-cbind(k,x_barra,f_x_barra)
 while (abs(f_x_barra)> erro) {
  if (sign(f_x_barra) == -1){
   b<-x_barra
       x_barra<-m1(a,b)
       f_x_barra <- FT_denom(x_barra)
-     print(cbind(x_barra,f_x_barra))
+      k<- k + 1
+      tbl1<-rbind(tbl1,cbind(k,x_barra,f_x_barra))
  } else if (sign(f_x_barra) == 1){
   a<-x_barra
   x_barra<-m1(a,b)
       f_x_barra <- FT_denom(x_barra)
-      print(cbind(x_barra,f_x_barra))
-     
+     k<- k + 1  
+     tbl1<-rbind(tbl1,cbind(k,x_barra,f_x_barra))
  }
-  k<- k + 1
+  
   print(k)
 raizes[j]<-x_barra
 }
-print(j)
+
+#Para segundo intervalo
+j<-2
+k<-1
+
+  a<- intervalos[[j]][[1]]
+b<- intervalos[[j]][[2]]
+tbl1_1<-matrix(nrow = 1,ncol = 3)
+x_barra<-m1(a,b)
+f_x_barra <- FT_denom(x_barra) #iniciar
+tbl1_1<-cbind(k,x_barra,f_x_barra)
+while (abs(f_x_barra)> erro) {
+ if (sign(f_x_barra) == -1){
+  b<-x_barra
+      x_barra<-m1(a,b)
+      f_x_barra <- FT_denom(x_barra)
+      k<- k + 1
+     tbl1_<-rbind(tbl1_1,cbind(k,x_barra,f_x_barra))
+     
+ } else if (sign(f_x_barra) == 1){
+  a<-x_barra
+  x_barra<-m1(a,b)
+      f_x_barra <- FT_denom(x_barra)
+      k<- k + 1
+    tbl1_1<-rbind(tbl1_1,cbind(k,x_barra,f_x_barra))
+   
+ }
+  
+ 
+raizes[j]<-x_barra
+print(raizes)
 }
-
-
-print(paste0("resultado final é:",x_barra))
-
-```
-Para o intervalo 2, entra em loop para esses valores de R's e C's para encontrar a raiz -0.9
-
-
-```{r}
-intervalos[[2]]
 
 ```
 # Método da Posição Falsa
@@ -161,11 +183,14 @@ raizes2<-c(0)
 j<-1
 k<-0
 
-for (j in 1:length(intervalos)) {
+#Primeiro intervalo
+
+tbl2_1<-matrix(nrow=1,ncol=3)
   a<- intervalos[[j]][[1]]
 b<- intervalos[[j]][[2]]
 x_barra<-m2(a,b)
 f_x_barra <- FT_denom(x_barra) #iniciar
+tbl2_1<-cbind(k,x_barra,f_x_barra)
 
 while ( abs(b-a) & abs(FT_denom(a)) & abs(FT_denom(b)) & abs(FT_denom(x_barra)) > erro) {
  if (sign(f_x_barra) == -1){
@@ -175,7 +200,8 @@ while ( abs(b-a) & abs(FT_denom(a)) & abs(FT_denom(b)) & abs(FT_denom(x_barra)) 
       x_barra<-m2(a,b)
       x_barra
       f_x_barra <- FT_denom(x_barra)
-      print(cbind(x_barra,f_x_barra))
+        k<- k + 1
+    tbl2_1<-rbind(tbl2_1,cbind(k,x_barra,f_x_barra))
  } else if (sign(f_x_barra) == 1){
       a<-x_barra
       a
@@ -184,18 +210,54 @@ while ( abs(b-a) & abs(FT_denom(a)) & abs(FT_denom(b)) & abs(FT_denom(x_barra)) 
       x_barra
       f_x_barra <- FT_denom(x_barra)
       f_x_barra
-      print(cbind(x_barra,f_x_barra))
+       k<- k + 1
+    tbl2_1<-rbind(tbl2_1,cbind(k,x_barra,f_x_barra))
      
  }
-  k<- k + 1
-  print(k)
+  
 raizes2[j]<-x_barra
 }
 
+
+#Segundo Intervalo
+j<-2
+k<-0
+
+
+
+tbl2_2<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+b<- intervalos[[j]][[2]]
+x_barra<-m2(a,b)
+f_x_barra <- FT_denom(x_barra) #iniciar
+tbl2_2<-cbind(k,x_barra,f_x_barra)
+
+while ( abs(b-a) & abs(FT_denom(a)) & abs(FT_denom(b)) & abs(FT_denom(x_barra)) > erro) {
+ if (sign(f_x_barra) == -1){
+      b<-x_barra
+      a
+      b
+      x_barra<-m2(a,b)
+      x_barra
+      f_x_barra <- FT_denom(x_barra)
+        k<- k + 1
+    tbl2_2<-rbind(tbl2_2,cbind(k,x_barra,f_x_barra))
+ } else if (sign(f_x_barra) == 1){
+      a<-x_barra
+      a
+      b
+      x_barra<-m2(a,b)
+      x_barra
+      f_x_barra <- FT_denom(x_barra)
+      f_x_barra
+       k<- k + 1
+    tbl2_2<-rbind(tbl2_2,cbind(k,x_barra,f_x_barra))
+     
+ }
+  
+raizes2[j]<-x_barra
 }
 
-
-print(paste0("resultado final é:",x_barra))
 
 ```
 
@@ -218,6 +280,12 @@ phi3 <- function(s){ ##isolando s da segunda parcela
   return(x0)
 }
 
+phi4 <- function(s){ ##isolando s da segunda parcela
+  x0<- (-1*(R1C1 + R2C2+ R1C2)*s -1)/(R1C1*R2C2*(s))
+  return(x0)
+}
+
+
 intervalos
 a<- intervalos[[1]][[1]]
 b<-intervalos[[1]][[2]]
@@ -229,48 +297,352 @@ for (i in 1:3) {
   xx[i]<-x0
   x0<-t
 }
+
+x0<- (a+b)/2
 xx2<- c(0)
 for (i in 1:3) {
   t<- phi2(x0)
   xx2[i]<-x0
   x0<-t
 }
+xx2
+
+x0<- (a+b)/2
 xx3<- c(0)
 for (i in 1:3) {
   t<- phi3(x0)
   xx3[i]<-x0
   x0<-t
 }
+xx3
 
+x0<- (a+b)/2
+xx4<- c(0)
+for (i in 1:3) {
+  t<- phi4(x0)
+  xx4[i]<-x0
+  x0<-t
+}
+xx4
 ```
-A função phi2 tem um limite de intervalo dentro do plano real devido a raiz. Por isso, usaremos phi1.
+A função phi2 tem um limite de intervalo dentro do plano real devido a raiz. Por isso, usaremos phi1 e phi4.
 
 ```{r}
-raizes3<- c(0)
-#for (j in 1:length(intervalos)) {
+raizes3_1<- c(0)
+#para primeiro intervalo
+j<-1
+
+tbl3_1<-matrix(nrow=1,ncol=3)
   a<- intervalos[[j]][[1]]
   b<- intervalos[[j]][[2]]
   x_barra<- (a+b)/2
   x1<- 1
   
   f_x_barra <- FT_denom(x_barra) #iniciar
-  k<- 1
-  tal<- list(0)
+  k<- 0
+ tbl3_1<-cbind(k,x_barra,f_x_barra)
   
   while (abs(f_x_barra)>erro & abs(x1)>erro) {
         t<- phi1(x_barra)
         x1<- (x_barra-t)
-        tal[[k]]<-cbind(x_barra, f_x_barra)
         x_barra<-t
         print(x_barra)
         f_x_barra <- FT_denom(x_barra)
         k<- k+1
-        raizes3[j]<-t
+        tbl3_1<-rbind(tbl3_1,cbind(k,x_barra,f_x_barra))
+        raizes3_1[j]<-t
   }
   
-#}
+
 print(raizes3)
 ggplot()+geom_line(aes(x = x, y = phi1(x))) + geom_line(aes(x = x, y =x))
 
+
 ```
-Por algum motivo, não funciona para o intervalo -13 a -12.5. Parece ter apenas um ponto de convergência. Phi2 e phi3 também não funcionam.
+Para o primeiro intervalo ( -13 -12.5), a função phi1 converge para a segunda raiz (-0.9787618) e não para a raiz dentro deste intervalo. Vamos tentar o segundo intervalo.
+
+```{r}
+raizes3_2<- c(0)
+#para segundp intervalo
+j<-2
+
+tbl3_2<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 1
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+  k<- 0
+ tbl3_2<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- phi1(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl3_2<-rbind(tbl3_2,cbind(k,x_barra,f_x_barra))
+        raizes3_2[j]<-t
+  }
+  
+
+
+
+```
+
+Por algum motivo, Phi1 não funciona para o intervalo -13 a -12.5. Parece ter apenas um ponto de convergência. Vamos testar phi4 para ambos intervalos.
+```{r}
+ggplot()+geom_line(aes(x = s, y = phi4(s))) + geom_line(aes(x = s, y =s))
+
+raizes3_3<- c(0)
+#para primeiro intervalo
+j<-1
+
+tbl3_3<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 1
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+  k<- 0
+ tbl3_3<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- phi4(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl3_3<-rbind(tbl3_3,cbind(k,x_barra,f_x_barra))
+        raizes3_3[j]<-t
+  }
+  
+
+print(tbl3_3)
+
+
+
+```
+```{r}
+#para segundo intervalo
+j<-2
+
+tbl3_4<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 1
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+  k<- 0
+ tbl3_4<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- phi4(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl3_4<-rbind(tbl3_4,cbind(k,x_barra,f_x_barra))
+        raizes3_3[j]<-t
+  }
+  
+
+
+
+
+
+```
+A função phi4 também parece convergir apenas para uma das raízes.
+
+
+## Método Newton Raphson
+
+O método tenta escolher uma função phi de iteração cujo phi'(raiz)=0
+
+As condições de convergência são:
+* f(x), f'(x) e f''(x) são contínuas em I;
+* f'(x) diferente de zero;
+* x0 está próximo da raiz.
+
+Precisaremos da derivada da função de i
+
+
+```{r}
+#Derivada da Função de Transferência
+
+FT_linha<- function(s){
+  denom<-  2*R1C1*R2C2*(s) + (R1C1 + R2C2+ R1C2)
+  return(denom)
+}
+
+
+m4<- function(x_barra){
+  x0<- x_barra - FT_denom(x_barra)/FT_linha(x_barra)
+  return(x0)
+}
+
+#para primeiro intervalo
+
+erro<- c(0.01)
+raizes4_1<-c(0)
+
+
+
+j<-1
+  k<- 0
+  
+tbl4_1<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 10000000
+  
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+
+ tbl4_1<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- m4(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl4_1<-rbind(tbl4_1,cbind(k,x_barra,f_x_barra))
+        raizes4_1[j]<-t
+  }
+  
+
+#para segundo intervalo
+
+erro<- c(0.01)
+raizes4_2<-c(0)
+
+
+
+j<-2
+  k<- 0
+  
+tbl4_2<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 10000000
+  
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+
+ tbl4_2<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- m4(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl4_2<-rbind(tbl4_2,cbind(k,x_barra,f_x_barra))
+        raizes4_2[j]<-t
+  }
+  
+```
+
+## Método da Secante
+
+Há situaçoes em que a derivada da f(x) possa ser um problema.
+
+Inicia com dois chutes iniciais.
+
+
+```{r}
+m5<- function(xk0,xk01){
+  x0<- FT_denom(xk1)*(xk1-xk0)/(FT_denom(xk1) - FT_denom(xk0))
+  return(x0)
+}
+
+
+#para primeiro intervalo
+
+erro<- c(0.01)
+raizes4_1<-c(0)
+
+
+
+j<-1
+  
+  
+tbl5_1<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  xk0<-a
+  xk1<-b
+
+  #x_barra<- (a+b)/2
+  x1<- 10000000
+  
+  fxk0<- FT_denom(xk0)
+  fxk1<- FT_denom(xk1)
+  
+
+ tbl5_1<-cbind(0,xk0,fxk0)
+ tbl5_1<-rbind(tbl5_1,cbind(1,xk1,fxk1))
+  k<- 2
+  x_barra<- 999 #apenas iniciar
+  f_x_barra <- FT_denom(x_barra) #iniciar
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        x_barra<- xk1
+        t<- m5(xk0,xk1)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl4_1<-rbind(tbl4_1,cbind(k,x_barra,f_x_barra))
+        raizes4_1[j]<-t
+  }
+  
+
+#para segundo intervalo
+
+erro<- c(0.01)
+raizes4_2<-c(0)
+
+
+
+j<-2
+  k<- 0
+  
+tbl4_2<-matrix(nrow=1,ncol=3)
+  a<- intervalos[[j]][[1]]
+  b<- intervalos[[j]][[2]]
+  x_barra<- (a+b)/2
+  x1<- 10000000
+  
+  
+  f_x_barra <- FT_denom(x_barra) #iniciar
+
+ tbl4_2<-cbind(k,x_barra,f_x_barra)
+  
+  while (abs(f_x_barra)>erro & abs(x1)>erro) {
+        t<- m4(x_barra)
+        x1<- (x_barra-t)
+        x_barra<-t
+        print(x_barra)
+        f_x_barra <- FT_denom(x_barra)
+        k<- k+1
+        tbl4_2<-rbind(tbl4_2,cbind(k,x_barra,f_x_barra))
+        raizes4_2[j]<-t
+  }
+  
+```
+
+
+```
+
