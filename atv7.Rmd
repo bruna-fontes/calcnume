@@ -1,0 +1,213 @@
+---
+title: "Atv 7"
+author: "Bruna Kariny Fontes Rodrigues"
+date: "09/06/2022"
+output: pdf_document
+---
+
+
+## Atividade 7
+
+Q1 - a e b - 
+```{r cars}
+
+matriz_3x3 <- function(x0,x1,x2)  {
+  M<- matrix(c(1,x0,x0^2,1,x1,x1^2,1,x2,x2^2),nrow = 3,ncol = 3, byrow = TRUE)
+return(M)
+}
+A1<-matriz_3x3(3,9,20)
+
+b1<- matrix(c(1.5,4.5,6))
+b1
+detA1<-det(A1)
+tem_solucao_unica<- !(detA1 == 0)
+tem_solucao_unica
+
+matrizAb<-cbind(A1,b1)
+pivos<-c(matrizAb[1,1], matrizAb[2,2],matrizAb[3,3])
+pivo_zero<- (pivos ==0)
+
+
+ml21 <- matrizAb[2,1]/pivos[1]
+ml31 <- matrizAb[3,1]/pivos[1]
+matrizAb_l2<-matrizAb[2,]-  matrizAb[1,]*ml21
+matrizAb_l3<-matrizAb[3,]-  matrizAb[1,]*ml31
+matrizAb<- rbind(matrizAb[1,],matrizAb_l3,matrizAb_l2)
+matrizAb
+pivos<-c(matrizAb[1,1], matrizAb[2,2],matrizAb[3,3])
+
+
+ml32 <- matrizAb[3,2]/pivos[2]
+matrizAb_l3<-(matrizAb[3,]-  matrizAb[2,]*ml32)
+matrizAb<- rbind(matrizAb[1,],matrizAb[2,],matrizAb_l3)
+print(matrizAb)
+
+a22<- (matrizAb[3,4]/matrizAb[3,3])
+a11<- (matrizAb[2,4]- matrizAb[2,3]*a22)/(matrizAb[2,2])
+a00<- (matrizAb[1,4] - matrizAb[1,2]*a11 - matrizAb[1,3]*a22)/matrizAb[1,1]
+print(paste("Os coeficientes ao,a1 e a2 são:",a00,a11,a22))
+
+p2<- function(a0,a1,a2,x){
+  m1<- (a0 + a1*x +a2*x^2)
+  return(m1)
+}
+p2(a00,a11,a22,5)
+
+```
+Q1 -c -
+```{r}
+P1 <- function(y0,y1,x0,x1){
+a1<- (y1-y0)/(x1-x0)
+a0<- y0 - a1*x0
+a<-c(a0,a1)
+return(a)
+} 
+a0<-P1(1.5,6,3,20)[1]
+a1<-P1(1.5,6,3,20)[2]
+
+p1<- function(a0,a1,x){
+  m1<- (a0 + a1*x)
+  return(m1)
+}
+p1(a0,a1,5)
+
+print("O valor calculado por P1 é menor que P2")
+```
+
+Q2 -
+
+
+```{r}
+r<-0
+x<- c(1.1,2.2,3.5)
+y<- c(10,29,90)
+m<- length(x)
+z<- c(1.5)
+for (i in 1:m) {
+  c=1
+  d = 1
+  for (j in 1:m) {
+    if (i != j) {
+      c<- c*(z-x[j])
+      d<- d*(x[i]-x[j])
+    }
+  }
+  r<-r+y[i]*c/d
+}
+print(r)
+
+```
+
+```{r}
+r<-0
+x<- c(1.1,2.2,3.5)
+y<- c(10,29,90)
+m<- length(x)
+z<- c(2.5)
+for (i in 1:m) {
+  c=1
+  d = 1
+  for (j in 1:m) {
+    if (i != j) {
+      c<- c*(z-x[j])
+      d<- d*(x[i]-x[j])
+    }
+  }
+  r<-r+y[i]*c/d
+}
+print(r)
+
+```
+
+Q3 - 
+
+
+```{r}
+r<-0
+X<-  c(1.1,2.2,3.5)
+y<- c(10,29,90)
+m<- length(x)
+z<- c(1.5)
+dely<-0
+for (i in 1:m) {
+  dely[i]<- y[i]
+}
+ordem1<-0
+  for (i in 3:2) {
+    ordem1[i]<-(dely[i]-dely[i-1])/(x[i]-x[i-1])
+    print(i)
+    }
+ordem2<-0
+ ordem2<-(ordem1[3]-ordem1[2])/(x[3]-x[1])
+
+
+dely<- c(y[1],ordem1[2],ordem2)
+xx<-1.5
+P2<- function(x0,x1,y0,x){
+  p2<- (y0 +(dely[2])*(xx-x0) + dely[3]*(xx-x0)*(xx-x1))
+return(p2)
+}
+
+
+
+
+
+x0<-X[1]
+x1<-X[2]
+y0<-y[1]
+P2(x0,x1,y0,1.5)
+
+r<- dely[m]
+
+for (i in (m-1):1) {
+  r<-r*(z-x[i])+dely[i]
+  print(r)
+}
+r
+```
+
+
+```{r}
+r<-0
+X<-  c(1.1,2.2,3.5)
+y<- c(10,29,90)
+m<- length(x)
+z<- c(2.5)
+dely<-0
+for (i in 1:m) {
+  dely[i]<- y[i]
+}
+ordem1<-0
+  for (i in 3:2) {
+    ordem1[i]<-(dely[i]-dely[i-1])/(x[i]-x[i-1])
+    print(i)
+    }
+ordem2<-0
+ ordem2<-(ordem1[3]-ordem1[2])/(x[3]-x[1])
+
+
+dely<- c(y[1],ordem1[2],ordem2)
+xx<-2.5
+P2<- function(x0,x1,y0,x){
+  p2<- (y0 +(dely[2])*(xx-x0) + dely[3]*(xx-x0)*(xx-x1))
+return(p2)
+}
+
+
+
+
+
+x0<-X[1]
+x1<-X[2]
+y0<-y[1]
+P2(x0,x1,y0,2.5)
+
+r<- dely[m]
+
+for (i in (m-1):1) {
+  r<-r*(z-x[i])+dely[i]
+  print(r)
+}
+r
+```
+

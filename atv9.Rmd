@@ -1,0 +1,122 @@
+---
+title: "Atv9"
+author: "Bruna Kariny Fontes Rodrigues"
+date: "01/07/2022"
+output: pdf_document
+---
+
+# Grupo 9  - Análise do número de habitantes do Brasil
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+
+
+```{r cars}
+dados<-tibble(Ano = c(1872,1890,1900,1920,1940,1950,1960,1970,1980,1991), habitantes = c(9.9,14.3,17.4,30.6,41.2,51.9,70.2,93.1,119,146.2))
+
+plot(dados)
+```
+
+
+
+```{r }
+teste_linear<- mutate(dados, xy = dados$Ano*dados$habitantes,`x²` = dados$Ano*dados$Ano )
+soma_linear<- apply(teste_linear,2,sum)
+n <- nrow(dados)
+
+a_linear<- function(soma,n){
+  aa<- (n*soma[3] - soma[1]*soma[2])/(n*soma[4] - (soma[1]^2))
+  return(aa)
+}
+
+a_l<-a_linear(soma_linear,n)
+
+b_linear <- function(soma,n){
+  bb<- (soma[1]*soma[3] - soma[2]*soma[4])/((soma[1]^2) -  n*soma[4])
+  return(bb)
+}
+b_l<-b_linear(soma_linear,n)
+
+```
+
+Ajuste linear
+
+
+```{r}
+
+g_linear<-function(a,b,x){
+  g1<- (a*x + b)
+  return(g1)
+}
+
+y_med<-  soma_linear[2]/n
+gx<- g_linear(a_l,b_l,dados$Ano)
+
+
+
+SQreg<-((abs(gx-y_med))^2)
+SQtot<- ((dados$habitantes - y_med)^2)
+R2linear<- (sum(SQreg))/(sum(SQtot))
+print(R2linear)
+```
+```{r}
+ggplot()+ geom_line(aes(x= dados$Ano, y= dados$habitantes)) + geom_line(aes(x= dados$Ano, y= gx),color = "red")
+```
+
+Ajuste ruim. Logo, tentaremos o exponencial.
+
+## Ajuste Exponencial
+
+```{r}
+
+
+teste_exp<- mutate(dados, y= log(dados$habitantes), `x*lny` =(log(dados$habitantes)*dados$Ano), `x²` = (((dados$Ano))^2))
+teste_exp<-(teste_exp[,c(1,3,4,5)])
+soma_exp<- apply(teste_exp,2, sum)
+a_exp<- a_linear(soma_exp,n)
+b_exp<- exp(b_linear(soma_exp,n))
+
+print(c(a_exp,b_exp))
+
+g_exp<- function(a,b,x){
+  g3<- (b*exp(a*x))
+    return(g3)
+}
+gg<-g_exp(a_exp,b_exp,dados$Ano)
+
+plot(dados$Ano,gg)
+
+```
+
+```{r}
+ggplot()+ geom_line(aes(x= dados$Ano, y= dados$habitantes)) + geom_line(aes(x= dados$Ano, y= gg),color = "red")
+```
+
+Uma vez que o ajuste está adequado, vamos para as questões.
+
+## Estimativa para o ano 2000.
+
+Lembrando que:
+$y= a*e^(b*x)$, logo
+$Habitantes = a*e^(b*ano)$
+
+```{r}
+habitantes2000<-g_exp(a_exp,b_exp,2000)
+
+habitantes2000
+```
+A estimativa para o ano 2000 é de 177,72 milhões de pessoas.
+
+## Em que ano Ultrapassa 100 milhões?
+
+Sabe-se que esse marco foi alcançado entre os anos 1970 e 1980.
+
+Então, esse o resultado para ser válido deve estar entre essas décadas.
+
+```{r}
+ano<-  (log(100/b_exp)/(a_exp))
+print(ano)
+```
+

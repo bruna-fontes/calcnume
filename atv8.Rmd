@@ -1,0 +1,197 @@
+---
+title: "Atv8"
+author: "Bruna Kariny Fontes Rodrigues"
+date: "19/06/2022"
+output: pdf_document
+---
+## Atividade 8 - Cálculo Númerico
+
+## Ajuste lineares
+
+```{r,echo=FALSE}
+library(tidyverse)
+```
+
+
+```{r }
+
+teste<- tibble(x = c(1,2,3,4), y = c(3,5,6,8))
+teste_linear<- mutate(teste, xy = teste$x*teste$y,`x²` = teste$x*teste$x )
+soma_linear<- apply(teste_linear,2,sum)
+n <- nrow(teste)
+
+a_linear<- function(soma,n){
+  aa<- (n*soma[3] - soma[1]*soma[2])/(n*soma[4] - (soma[1]^2))
+  return(aa)
+}
+
+a_l<-a_linear(soma_linear,n)
+
+b_linear <- function(soma,n){
+  bb<- (soma[1]*soma[3] - soma[2]*soma[4])/((soma[1]^2) -  n*soma[4])
+  return(bb)
+}
+
+
+b_l<-b_linear(soma_linear,n)
+g_linear<-function(a,b,x){
+  g1<- (a*x + b)
+  return(g1)
+}
+
+```
+## Ajuste Logaritmico
+
+g(x) = a*log(x) +b
+
+
+```{r}
+teste_log<- mutate(teste, x= log(teste$x), `lnx*y` =(log(teste$x)*teste$y), `lnx²` <- ((log(teste$x))^2))
+soma_log<- apply(teste_log,2, sum)
+
+a_log<-a_linear(soma_log, n)
+b_log<- b_linear(soma_log, n)
+
+g_log<- function(a,b,x){
+  g2<- (a*log(x) + b)
+    return(g2)
+  }
+
+
+```
+## Ajuste Exponecial
+
+g(x) = b*e^ax
+ y = a*x +b
+
+```{r}
+
+teste_exp<- mutate(teste, y= log(teste$y), `x*lny` =(log(teste$y)*teste$x), `x²` = (((teste$x))^2))
+soma_exp<- apply(teste_exp,2, sum)
+a_exp<- a_linear(soma_exp,n)
+b_exp<- exp(b_linear(soma_exp,n))
+
+g_exp<- function(a,b,x){
+  g3<- (b*exp(a*x))
+    return(g3)
+  }
+```
+
+# Ajuste Potência
+
+g4(x) = b*x^2
+
+
+```{r}
+teste_pot<- mutate(teste, x= log(teste$x),y= log(teste$y), `lnx*lny` =(log(teste$x)*log(teste$y)), `lnx²` = ((log(teste$x))^2))
+soma_pot<- apply(teste_pot,2, sum)
+a_pot<- a_linear(soma_pot,n)
+b_pot <-exp(b_linear(soma_pot,n))
+
+g_pot<- function(a,b,x){
+  g4<- (b*(x^(a)))
+    return(g4)
+  }
+```
+
+# R²    
+
+próximo de 0 <- ruim
+próximode 1<- bom
+
+```{r}
+y_med<-  soma_linear[2]/n
+gx<- g_linear(a_l,b_l,teste$x)
+
+
+SQreg<-((abs(gx-y_med))^2)
+SQtot<- ((teste$y - y_med)^2)
+`R²`<- (sum(SQreg))/(sum(SQtot))
+
+```
+
+
+## Lista de Exercícios
+
+Q1-
+a) R² da exp
+
+```{r}
+y_med<-  soma_exp[2]/n
+gx<- g_exp(a_exp,b_exp,teste$x)
+
+print(gx)
+plot(teste$x, gx)
+
+SQreg<-0
+for (i in 1:nrow(teste)) {
+SQreg[i] <- ((gx[i]  -y_med))^2
+  
+}
+SQtot<-0
+for (i in 1:nrow(teste)) {
+SQtot[i] <- ((teste$y[i]  -y_med))^2
+} 
+
+
+print(cbind(SQreg, SQtot))
+`R²`<- (sum(SQreg))/(sum(SQtot))
+print(`R²`)
+```
+O R² está maior que 1, logo há algum erro que não consegui identificar. 
+
+b) R² da log
+
+```{r}
+y_med<-  soma_log[2]/n
+gx<- g_log(a_log,b_log,teste$x)
+
+print(gx)
+
+SQreg<-((abs(gx-y_med))^2)
+SQtot<- ((teste$y - y_med)^2)
+print(cbind(SQreg, SQtot))
+`R²`<- (sum(SQreg))/(sum(SQtot))
+print(`R²`)
+```
+Q2- 
+
+a)
+
+y= a*e^(b*x)
+
+```{r}
+q2<- tibble(x= c(0,1,2,3,4,5,6), y= c(32,47,65,92,132,190,275))
+print(q2)
+n<- nrow(q2)
+
+plot(q2$x,q2$y)
+
+teste_exp<- mutate(q2, y= log(q2$y), `x*lny` =(log(q2$y)*q2$x), `x²` = (((q2$x))^2))
+
+soma_exp<- apply(teste_exp,2, sum)
+a_exp<- a_linear(soma_exp,n)
+b_exp<- exp(b_linear(soma_exp,n))
+
+print(c(a_exp,b_exp))
+
+g_exp<- function(a,b,x){
+  g3<- (b*exp(a*x))
+    return(g3)
+}
+gg<-g_exp(a_exp,b_exp,q2$x)
+
+plot(q2$x,gg)
+```
+
+Q2 - b)
+```{r}
+hora<-  (log(2000/b_exp)/(a_exp))
+print(hora)
+
+print(g_exp(a_exp,b_exp,hora))
+
+
+```
+
+
